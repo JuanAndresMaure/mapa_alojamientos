@@ -43,14 +43,10 @@ function getColorByClass(clase) {
     }
 }
 
-// Función para crear un ícono de marcador desde el SVG
+// Función para crear un ícono de marcador usando el SVG
 function createMarkerIcon(color) {
-    const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="50" fill="${color}">
-        <path d="M15 0C6.716 0 0 6.716 0 15c0 8.284 15 35 15 35s15-26.716 15-35c0-8.284-6.716-15-15-15zm0 22.5c-4.136 0-7.5-3.364-7.5-7.5S10.864 7.5 15 7.5 22.5 10.864 22.5 15 19.136 22.5 15 22.5z"/>
-    </svg>`;
-    const iconUrl = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svgIcon);
     return L.icon({
-        iconUrl: iconUrl,
+        iconUrl: `https://raw.githubusercontent.com/JuanAndresMaure/mapa_alojamientos/main/alojamiento.svg`, // URL del SVG
         iconSize: [30, 50], // Tamaño del ícono
         iconAnchor: [15, 50], // Punto de anclaje
         popupAnchor: [0, -40] // Punto de anclaje del popup
@@ -111,6 +107,11 @@ fetch('alojamientos.geojson')
 
         L.control.layers(baseMaps, overlayMaps).addTo(map);
     })
+    .catch(error => {
+        console.error('Error al cargar el archivo GeoJSON:', error);
+        alert('No se pudo cargar el mapa. Verifique la consola para más detalles.');
+    });
+
     .catch(error => {
         console.error('Error al cargar el archivo GeoJSON:', error);
         alert('No se pudo cargar el mapa. Verifique la consola para más detalles.');
