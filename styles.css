@@ -26,8 +26,11 @@ body, html {
 
 /* Estilo del marcador personalizado */
 .custom-marker {
-  width: 20px;
-  height: 20px;
+  width: 30px; /* Ancho del marcador */
+  height: 50px; /* Alto del marcador */
+  background-image: url('https://raw.githubusercontent.com/JuanAndresMaure/mapa_alojamientos/main/alojamiento.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   border-radius: 50%;
-  border: 2px solid white;
 }
