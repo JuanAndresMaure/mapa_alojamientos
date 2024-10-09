@@ -1,35 +1,40 @@
 /* styles.css */
 
 body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
 
 #map {
-  height: 100vh;
-  width: 100%;
+    height: 100vh;
+    width: 100%;
 }
 
 /* Estilo del popup */
 .leaflet-popup {
-  max-width: 200px; /* Puedes ajustar el ancho máximo */
+    max-width: 200px; /* Puedes ajustar el ancho máximo */
 }
 
 .leaflet-popup b {
-  color: #333; /* Cambia el color del texto en negrita */
+    color: #333; /* Cambia el color del texto en negrita */
 }
 
 .leaflet-popup p {
-  margin: 5px 0; /* Espaciado entre párrafos */
+    margin: 5px 0; /* Espaciado entre párrafos */
+}
+
+/* Estilo de la leyenda */
+.leaflet-control-leyenda {
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    font-size: 14px;
 }
 
 /* Estilo del marcador personalizado */
 .custom-marker {
-  width: 30px; /* Ancho del marcador */
-  height: 50px; /* Alto del marcador */
-  background-image: url('https://raw.githubusercontent.com/JuanAndresMaure/mapa_alojamientos/main/alojamiento.svg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+    width: 30px;
+    height: 50px;
 }
