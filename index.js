@@ -5,17 +5,6 @@ const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Capas base de Google
-const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
-    attribution: 'Google Satellite'
-});
-
-const googleRoadmap = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
-    attribution: 'Google Roadmap'
-});
-
 // Función para obtener el color según la clase
 function getColorByClass(clase) {
     switch(clase) {
@@ -43,13 +32,13 @@ function getColorByClass(clase) {
     }
 }
 
-// Función para crear un ícono de marcador usando el SVG
-function createMarkerIcon() {
-    return L.icon({
-        iconUrl: `https://raw.githubusercontent.com/JuanAndresMaure/mapa_alojamientos/main/alojamiento.svg`,
-        iconSize: [30, 50],
-        iconAnchor: [15, 50],
-        popupAnchor: [0, -40]
+// Función para crear un ícono de marcador
+function createMarkerIcon(color) {
+    return L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="background-color: ${color}; border-radius: 50%; width: 20px; height: 20px; border: 2px solid white;"></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
     });
 }
 
@@ -77,7 +66,8 @@ fetch('alojamientos.geojson')
 
         data.features.forEach(feature => {
             const latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
-            const markerIcon = createMarkerIcon();
+            const color = getColorByClass(feature.properties.clase);
+            const markerIcon = createMarkerIcon(color);
 
             const marker = L.marker(latlng, {
                 icon: markerIcon
@@ -92,52 +82,6 @@ fetch('alojamientos.geojson')
         });
 
         map.addLayer(markers);
-
-        // Controles de capas
-        const baseMaps = {
-            "OpenStreetMap": osmLayer,
-            "Google Satélite": googleSatellite,
-            "Google Mapa": googleRoadmap
-        };
-
-        const overlayMaps = {
-            "Alojamientos": markers
-        };
-
-        L.control.layers(baseMaps, overlayMaps).addTo(map);
-
-        // Crear la leyenda
-        const leyenda = L.control({ position: 'bottomright' });
-
-        leyenda.onAdd = function() {
-            const div = L.DomUtil.create('div', 'leaflet-control-leyenda');
-            div.innerHTML = `
-                <h4>Leyenda de Alojamientos</h4>
-                <i style="background: red"></i> AGROTURISMO aloj. Camping<br>
-                <i style="background: orange"></i> AGROTURISMO s/alojamiento<br>
-                <i style="background: blue"></i> Albergue Turístico u Hostel<br>
-                <i style="background: green"></i> Alojamiento en Estancia Turística<br>
-                <i style="background: purple"></i> Apart-hotel<br>
-                <i style="background: pink"></i> Bed & Breakfast<br>
-                <i style="background: brown"></i> Bodega<br>
-                <i style="background: cyan"></i> Cabañas<br>
-                <i style="background: magenta"></i> Dormis<br>
-                <i style="background: lightblue"></i> Dormis / Cabaña<br>
-                <i style="background: darkgreen"></i> ESTANCIA TURISTICA s/aloj.<br>
-                <i style="background: darkblue"></i> Hostería<br>
-                <i style="background: black"></i> Hotel<br>
-                <i style="background: darkred"></i> Motel<br>
-                <i style="background: gray"></i> None<br>
-                <i style="background: yellow"></i> Residencial<br>
-                <i style="background: lightgreen"></i> Turismo Rural<br>
-                <i style="background: lightcoral"></i> Turismo Rural / Vivienda tcas<br>
-                <i style="background: lime"></i> Vivienda Turística<br>
-                <i style="background: slateblue"></i> Vivienda Turística / Cabaña<br>
-            `;
-            return div;
-        };
-
-        leyenda.addTo(map);
     })
     .catch(error => {
         console.error('Error al cargar el archivo GeoJSON:', error);
