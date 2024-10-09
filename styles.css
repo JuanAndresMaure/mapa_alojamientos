@@ -1,5 +1,3 @@
-/* styles.css */
-
 body, html {
   margin: 0;
   padding: 0;
@@ -13,21 +11,13 @@ body, html {
 
 /* Estilo del popup */
 .leaflet-popup {
-  max-width: 200px; /* Puedes ajustar el ancho máximo */
+  max-width: 200px;
 }
 
 .leaflet-popup b {
-  color: #333; /* Cambia el color del texto en negrita */
+  color: #333;
 }
 
 .leaflet-popup p {
-  margin: 5px 0; /* Espaciado entre párrafos */
-}
-
-/* Estilo del marcador personalizado */
-.custom-marker {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid white;
+  margin: 5px 0;
 }
