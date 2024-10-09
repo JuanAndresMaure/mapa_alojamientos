@@ -32,13 +32,13 @@ function getColorByClass(clase) {
     }
 }
 
-// Crear un ícono de marcador de tipo "agua"
+// Crear un ícono de marcador con el color correspondiente
 function createMarkerIcon(color) {
     return L.divIcon({
         className: 'custom-marker',
-        html: `<div style="background-color: ${color}; border-radius: 5px; width: 20px; height: 10px; border: 2px solid white;"></div>`,
-        iconSize: [20, 10],
-        iconAnchor: [10, 5]
+        html: `<div style="background-color: ${color}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;"></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 20]
     });
 }
 
