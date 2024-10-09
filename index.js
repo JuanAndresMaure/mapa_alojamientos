@@ -24,9 +24,19 @@ const baseMaps = {
 
 // Capa de Alojamientos
 const markers = L.markerClusterGroup();
+
 fetch('alojamientos.geojson')
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al cargar el archivo GeoJSON de alojamientos');
+        }
+        return response.json();
+    })
     .then(data => {
+        if (!data || !data.features || data.features.length === 0) {
+            throw new Error('No se encontraron alojamientos en el archivo GeoJSON.');
+        }
+
         data.features.forEach(feature => {
             const latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
             const color = getColorByClass(feature.properties.clase);
@@ -43,30 +53,41 @@ fetch('alojamientos.geojson')
         });
 
         map.addLayer(markers);
+    })
+    .catch(error => {
+        console.error('Error al cargar el archivo GeoJSON de alojamientos:', error);
+        alert('No se pudo cargar la capa de alojamientos. Verifique la consola para más detalles.');
     });
 
 // Capa de Regiones
-const regionColors = {
-    "Centro Oeste": "#f4ff92",
-    "Comarca Petrolera": "#ff9029",
-    "Confluencia": "#d7f1eb",
-    "Norte": "#c0a483",
-    "Limay Medio": "#519b8d",
-    "Sur": "#ff5389",
-    "Vaca Muerta": "#b775c4"
-};
-
-const regionsLayer = L.geoJson(null, {
-    style: function (feature) {
-        return { color: regionColors[feature.properties.region] || 'gray' };
-    }
-});
+let regionsLayer;
 
 fetch('regiones.geojson')
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al cargar el archivo GeoJSON de regiones');
+        }
+        return response.json();
+    })
     .then(data => {
-        regionsLayer.addData(data);
-        map.addLayer(regionsLayer);
+        if (!data || !data.features || data.features.length === 0) {
+            throw new Error('No se encontraron regiones en el archivo GeoJSON.');
+        }
+
+        regionsLayer = L.geoJson(data, {
+            style: feature => ({
+                color: getColorByRegion(feature.properties.region),
+                weight: 2,
+                fillOpacity: 0.5
+            })
+        });
+
+        // No agregar la capa al mapa para que esté desactivada inicialmente
+        // map.addLayer(regionsLayer); // Esta línea ha sido comentada
+    })
+    .catch(error => {
+        console.error('Error al cargar el archivo GeoJSON de regiones:', error);
+        alert('No se pudo cargar la capa de regiones. Verifique la consola para más detalles.');
     });
 
 // Control de capas
@@ -77,11 +98,7 @@ const overlays = {
 
 L.control.layers(baseMaps, overlays, { collapsed: false }).addTo(map);
 
-// Ajustar la vista del mapa
-const bounds = L.geoJson(data).getBounds();
-map.fitBounds(bounds);
-
-// Función para obtener el color según la clase
+// Funciones de color
 function getColorByClass(clase) {
     switch (clase) {
         case "AGROTURISMO aloj. Camping": return "red";
@@ -105,6 +122,19 @@ function getColorByClass(clase) {
         case "Vivienda Turística": return "lime";
         case "Vivienda Turística / Cabaña": return "slateblue";
         default: return "gray"; // Color por defecto
+    }
+}
+
+function getColorByRegion(region) {
+    switch (region) {
+        case "Centro Oeste": return "#f4ff92";
+        case "Comarca Petrolera": return "#ff9029";
+        case "Confluencia": return "#d7f1eb";
+        case "Norte": return "#c0a483";
+        case "Limay Medio": return "#519b8d";
+        case "Sur": return "#ff5389";
+        case "Vaca Muerta": return "#b775c4";
+        default: return "#ffffff"; // Color por defecto
     }
 }
 
