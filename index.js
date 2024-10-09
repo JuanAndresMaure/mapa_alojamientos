@@ -44,7 +44,7 @@ function getColorByClass(clase) {
 }
 
 // Función para crear un ícono de marcador usando el SVG
-function createMarkerIcon(color) {
+function createMarkerIcon() {
     return L.icon({
         iconUrl: `https://raw.githubusercontent.com/JuanAndresMaure/mapa_alojamientos/main/alojamiento.svg`,
         iconSize: [30, 50],
@@ -77,8 +77,7 @@ fetch('alojamientos.geojson')
 
         data.features.forEach(feature => {
             const latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
-            const color = getColorByClass(feature.properties.clase);
-            const markerIcon = createMarkerIcon(color);
+            const markerIcon = createMarkerIcon();
 
             const marker = L.marker(latlng, {
                 icon: markerIcon
@@ -133,4 +132,14 @@ fetch('alojamientos.geojson')
                 <i style="background: lightgreen"></i> Turismo Rural<br>
                 <i style="background: lightcoral"></i> Turismo Rural / Vivienda tcas<br>
                 <i style="background: lime"></i> Vivienda Turística<br>
-                <
+                <i style="background: slateblue"></i> Vivienda Turística / Cabaña<br>
+            `;
+            return div;
+        };
+
+        leyenda.addTo(map);
+    })
+    .catch(error => {
+        console.error('Error al cargar el archivo GeoJSON:', error);
+        alert('No se pudo cargar el mapa. Verifique la consola para más detalles.');
+    });
