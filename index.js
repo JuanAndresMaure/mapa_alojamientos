@@ -32,13 +32,11 @@ function getColorByClass(clase) {
     }
 }
 
-// Función para crear un ícono de marcador
+// Crear un ícono de marcador con el color correspondiente
 function createMarkerIcon(color) {
-    return L.divIcon({
-        className: 'custom-marker',
-        html: `<div style="background-color: ${color}; border-radius: 50%; width: 20px; height: 20px; border: 2px solid white;"></div>`,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
+    return L.AwesomeMarkers.icon({
+        icon: 'info',
+        markerColor: color
     });
 }
 
@@ -87,3 +85,9 @@ fetch('alojamientos.geojson')
         console.error('Error al cargar el archivo GeoJSON:', error);
         alert('No se pudo cargar el mapa. Verifique la consola para más detalles.');
     });
+
+// Añade el evento para mostrar/ocultar la leyenda
+document.getElementById('toggle-legend').addEventListener('click', () => {
+    const legend = document.getElementById('legend');
+    legend.style.display = legend.style.display === 'none' ? 'block' : 'none';
+});
