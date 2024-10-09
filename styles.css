@@ -31,3 +31,36 @@ body, html {
   border-radius: 50%;
   border: 2px solid white;
 }
+
+/* Estilos para la leyenda */
+#legend {
+    display: none; /* Inicialmente oculto */
+    position: absolute;
+    bottom: 60px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+/* Estilos para el botón de leyenda */
+#toggle-legend {
+    background-color: #4CAF50; /* Color de fondo verde */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 10px 15px; /* Espaciado interno */
+    cursor: pointer; /* Cambiar cursor al pasar por encima */
+    font-family: 'Arial', sans-serif; /* Fuente más limpia */
+    font-size: 16px; /* Tamaño de fuente */
+    transition: background-color 0.3s; /* Transición suave */
+    position: absolute; /* Para posicionar */
+    bottom: 20px; /* Espaciado desde abajo */
+    right: 20px; /* Espaciado desde la derecha */
+    z-index: 1000; /* Asegura que esté por encima */
+}
+
+#toggle-legend:hover {
+    background-color: #45a049; /* Color más oscuro al pasar el ratón */
+}
