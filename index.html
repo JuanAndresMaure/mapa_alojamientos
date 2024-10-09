@@ -9,8 +9,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Estilos para la leyenda */
         #legend {
-            display: none;
+            display: none; /* Inicialmente oculto */
             position: absolute;
             bottom: 60px;
             right: 20px;
@@ -54,7 +55,7 @@
         // Lógica para abrir/cerrar la leyenda
         const toggleButton = document.getElementById('toggle-legend');
         const legend = document.getElementById('legend');
-        
+
         toggleButton.addEventListener('click', () => {
             if (legend.style.display === 'none') {
                 legend.style.display = 'block';
