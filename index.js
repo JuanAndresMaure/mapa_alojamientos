@@ -2,7 +2,7 @@ const map = L.map('map').setView([-38.859, -68.097], 13);
 
 // Capa base de OpenStreetMap
 const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
 // Función para obtener el color según la clase
@@ -60,7 +60,7 @@ function createMarkerIcon(color) {
 fetch('alojamientos.geojson')
     .then(response => {
         if (!response.ok) {
-            throw new Error('Error al cargar el archivo GeoJSON de alojamientos');
+            throw new Error('Error al cargar el archivo GeoJSON');
         }
         return response.json();
     })
@@ -83,7 +83,9 @@ fetch('alojamientos.geojson')
             const color = getColorByClass(feature.properties.clase);
             const markerIcon = createMarkerIcon(color);
 
-            const marker = L.marker(latlng, { icon: markerIcon }).bindPopup(`
+            const marker = L.marker(latlng, {
+                icon: markerIcon
+            }).bindPopup(`
                 <b>Nombre:</b> ${feature.properties.nombre || 'Sin nombre'}<br>
                 <b>Dirección:</b> ${feature.properties.direccion || 'Sin dirección'}<br>
                 <b>Clase:</b> ${feature.properties.clase || 'Sin clase'}<br>
@@ -96,8 +98,8 @@ fetch('alojamientos.geojson')
         map.addLayer(markers);
     })
     .catch(error => {
-        console.error('Error al cargar el archivo GeoJSON de alojamientos:', error);
-        alert('No se pudo cargar la capa de alojamientos. Verifique la consola para más detalles.');
+        console.error('Error al cargar el archivo GeoJSON:', error);
+        alert('No se pudo cargar el mapa. Verifique la consola para más detalles.');
     });
 
 // Cargar datos GeoJSON de regiones
@@ -123,22 +125,11 @@ fetch('regiones.geojson')
             })
         });
 
-        // No agregar la capa de regiones al mapa para que esté desactivada inicialmente
-        // map.addLayer(regionsLayer); // Esta línea ha sido comentada
+        // Agregar la capa de regiones al mapa, pero desactivada inicialmente
+        regionsLayer.addTo(map);
+        map.removeLayer(regionsLayer); // Remueve la capa para que esté desactivada
     })
     .catch(error => {
         console.error('Error al cargar el archivo GeoJSON de regiones:', error);
         alert('No se pudo cargar la capa de regiones. Verifique la consola para más detalles.');
     });
-
-// Control de capas
-const baseMaps = {
-    "OpenStreetMap": osmLayer
-};
-
-const overlays = {
-    "Alojamientos": markers,
-    "Regiones": regionsLayer
-};
-
-L.control.layers(baseMaps, overlays, { collapsed: false }).addTo(map);
