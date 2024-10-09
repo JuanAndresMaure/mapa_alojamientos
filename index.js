@@ -1,11 +1,10 @@
 const map = L.map('map').setView([-38.859, -68.097], 13);
 
-// Capa base de OpenStreetMap
+// Capas base de OpenStreetMap y Google
 const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Capas base de Google
 const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     maxZoom: 20,
     attribution: 'Google Satellite'
@@ -43,13 +42,11 @@ function getColorByClass(clase) {
     }
 }
 
-// Función para crear un ícono de marcador usando el SVG
+// Función para crear un ícono de marcador
 function createMarkerIcon(color) {
-    return L.icon({
-        iconUrl: `https://raw.githubusercontent.com/JuanAndresMaure/mapa_alojamientos/main/alojamiento.svg`, // URL del SVG
-        iconSize: [30, 50], // Tamaño del ícono
-        iconAnchor: [15, 50], // Punto de anclaje
-        popupAnchor: [0, -40] // Punto de anclaje del popup
+    return L.divIcon({
+        className: 'custom-marker',
+        style: `background-color: ${color};` // Establecer el color de fondo
     });
 }
 
@@ -69,20 +66,15 @@ fetch('alojamientos.geojson')
         const bounds = L.geoJson(data).getBounds();
         map.fitBounds(bounds);
 
-        const markers = L.markerClusterGroup({
-            spiderfyDistanceMultiplier: 1.2,
-            showCoverageOnHover: false,
-            zoomToBoundsOnClick: true
-        });
+        // Crear grupo de marcadores para el clustering
+        const markers = L.markerClusterGroup();
 
         data.features.forEach(feature => {
             const latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
             const color = getColorByClass(feature.properties.clase);
             const markerIcon = createMarkerIcon(color);
 
-            const marker = L.marker(latlng, {
-                icon: markerIcon
-            }).bindPopup(`
+            const marker = L.marker(latlng, { icon: markerIcon }).bindPopup(`
                 <b>Nombre:</b> ${feature.properties.nombre || 'Sin nombre'}<br>
                 <b>Dirección:</b> ${feature.properties.direccion || 'Sin dirección'}<br>
                 <b>Clase:</b> ${feature.properties.clase || 'Sin clase'}<br>
@@ -92,11 +84,12 @@ fetch('alojamientos.geojson')
             markers.addLayer(marker);
         });
 
+        // Agregar los marcadores al mapa
         map.addLayer(markers);
 
         // Controles de capas
         const baseMaps = {
-            "OpenStreetMap": osmLayer,
+            "Mapa Base": osmLayer,
             "Google Satélite": googleSatellite,
             "Google Mapa": googleRoadmap
         };
@@ -107,11 +100,6 @@ fetch('alojamientos.geojson')
 
         L.control.layers(baseMaps, overlayMaps).addTo(map);
     })
-    .catch(error => {
-        console.error('Error al cargar el archivo GeoJSON:', error);
-        alert('No se pudo cargar el mapa. Verifique la consola para más detalles.');
-    });
-
     .catch(error => {
         console.error('Error al cargar el archivo GeoJSON:', error);
         alert('No se pudo cargar el mapa. Verifique la consola para más detalles.');
