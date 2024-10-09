@@ -49,8 +49,8 @@ body, html {
 
 /* Estilos para el botón de leyenda */
 #toggle-legend {
-    background-color: #007BFF; /* Color azul */
-    color: white; /* Color del texto */
+    background-color: #87B867; /* Color verde */
+    color: black; /* Color del texto */
     border: none; /* Sin borde */
     border-radius: 5px; /* Bordes redondeados */
     padding: 10px 15px; /* Espaciado interno */
