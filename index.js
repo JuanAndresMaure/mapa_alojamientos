@@ -43,10 +43,14 @@ function getColorByClass(clase) {
     }
 }
 
-// Función para crear un ícono de marcador tipo gota
+// Función para crear un ícono de marcador desde el SVG
 function createMarkerIcon(color) {
+    const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="50" fill="${color}">
+        <path d="M15 0C6.716 0 0 6.716 0 15c0 8.284 15 35 15 35s15-26.716 15-35c0-8.284-6.716-15-15-15zm0 22.5c-4.136 0-7.5-3.364-7.5-7.5S10.864 7.5 15 7.5 22.5 10.864 22.5 15 19.136 22.5 15 22.5z"/>
+    </svg>`;
+    const iconUrl = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svgIcon);
     return L.icon({
-        iconUrl: `https://dummyimage.com/30x50/${color.substring(1)}/ffffff.png&text=▲`, // Crear un ícono de gota
+        iconUrl: iconUrl,
         iconSize: [30, 50], // Tamaño del ícono
         iconAnchor: [15, 50], // Punto de anclaje
         popupAnchor: [0, -40] // Punto de anclaje del popup
