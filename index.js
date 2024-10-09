@@ -5,20 +5,21 @@ const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
 
-// Capa base de Mapbox (asegúrate de obtener tu token)
-const mapboxLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=YOUR_MAPBOX_ACCESS_TOKEN', {
-    attribution: '© Mapbox',
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1
+// Capa base de Google Satellite (requiere una clave de API, pero aquí está como ejemplo)
+const googleSatelliteLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    attribution: '© Google',
+    subdomains: '0123',
+    maxZoom: 20
 });
 
-// Capa base de Stamen Toner (opcional)
-const tonerLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under ODbL.'
+// Capa base de Google Roads (requiere una clave de API, pero aquí está como ejemplo)
+const googleRoadsLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    attribution: '© Google',
+    subdomains: '0123',
+    maxZoom: 20
 });
 
-// Agregar la capa base predeterminada
+// Agregar la capa base predeterminada (OpenStreetMap)
 osmLayer.addTo(map);
 
 // Función para obtener el color según la clase
@@ -151,8 +152,8 @@ fetch('regiones.geojson')
 // Control de capas base
 const baseMaps = {
     "OpenStreetMap": osmLayer,
-    "Mapbox": mapboxLayer,
-    "Stamen Toner": tonerLayer
+    "Google Satellite": googleSatelliteLayer,
+    "Google Roads": googleRoadsLayer
 };
 
 // Control de capas superpuestas
