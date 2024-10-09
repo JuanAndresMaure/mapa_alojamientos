@@ -38,7 +38,7 @@ body, html {
     display: none; /* Inicialmente oculto */
     position: absolute;
     bottom: 60px;
-    right: 20px;
+    left: 20px; /* Cambiado de right a left */
     z-index: 1000;
     background: white;
     padding: 10px;
@@ -57,10 +57,11 @@ body, html {
     cursor: pointer; /* Cambiar cursor al pasar por encima */
     font-family: 'Gothic A1', sans-serif; /* Fuente gótica */
     font-size: 16px; /* Tamaño de fuente */
+    font-weight: bold; /* Texto en negrita */
     transition: background-color 0.3s, transform 0.2s; /* Transiciones suaves */
     position: absolute; /* Para posicionar */
     bottom: 20px; /* Espaciado desde abajo */
-    right: 20px; /* Espaciado desde la derecha */
+    left: 20px; /* Cambiado de right a left */
     z-index: 1000; /* Asegura que esté por encima */
 }
 
