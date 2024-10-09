@@ -3,7 +3,23 @@ const map = L.map('map').setView([-38.859, -68.097], 13);
 // Capa base de OpenStreetMap
 const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
+});
+
+// Capa base de Mapbox (asegúrate de obtener tu token)
+const mapboxLayer = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=YOUR_MAPBOX_ACCESS_TOKEN', {
+    attribution: '© Mapbox',
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1
+});
+
+// Capa base de Stamen Toner (opcional)
+const tonerLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
+    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under ODbL.'
+});
+
+// Agregar la capa base predeterminada
+osmLayer.addTo(map);
 
 // Función para obtener el color según la clase
 function getColorByClass(clase) {
@@ -125,11 +141,30 @@ fetch('regiones.geojson')
             })
         });
 
-        // Agregar la capa de regiones al mapa, pero desactivada inicialmente
-        regionsLayer.addTo(map);
-        map.removeLayer(regionsLayer); // Remueve la capa para que esté desactivada
+        // No agregar la capa de regiones al mapa aún
     })
     .catch(error => {
         console.error('Error al cargar el archivo GeoJSON de regiones:', error);
         alert('No se pudo cargar la capa de regiones. Verifique la consola para más detalles.');
     });
+
+// Control de capas base
+const baseMaps = {
+    "OpenStreetMap": osmLayer,
+    "Mapbox": mapboxLayer,
+    "Stamen Toner": tonerLayer
+};
+
+// Control de capas superpuestas
+const overlayMaps = {
+    "Alojamientos": markers,
+    "Regiones": regionsLayer
+};
+
+// Agregar el control de capas al mapa
+const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+// Al cargar la capa de regiones, agregarla al control de capas
+if (regionsLayer) {
+    layerControl.addOverlay(regionsLayer, "Regiones");
+}
