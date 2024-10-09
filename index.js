@@ -5,14 +5,14 @@ const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
 
-// Capa base de Google Satellite (requiere una clave de API, pero aquí está como ejemplo)
+// Capa base de Google Satellite (requiere una clave de API)
 const googleSatelliteLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     attribution: '© Google',
     subdomains: '0123',
     maxZoom: 20
 });
 
-// Capa base de Google Roads (requiere una clave de API, pero aquí está como ejemplo)
+// Capa base de Google Roads (requiere una clave de API)
 const googleRoadsLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
     attribution: '© Google',
     subdomains: '0123',
@@ -21,6 +21,10 @@ const googleRoadsLayer = L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y
 
 // Agregar la capa base predeterminada (OpenStreetMap)
 osmLayer.addTo(map);
+
+// Variables globales
+let markers = L.markerClusterGroup(); // Inicializar el grupo de marcadores
+let regionsLayer;
 
 // Función para obtener el color según la clase
 function getColorByClass(clase) {
@@ -89,12 +93,6 @@ fetch('alojamientos.geojson')
         const bounds = L.geoJson(data).getBounds();
         map.fitBounds(bounds);
 
-        const markers = L.markerClusterGroup({
-            spiderfyDistanceMultiplier: 1.2,
-            showCoverageOnHover: false,
-            zoomToBoundsOnClick: true
-        });
-
         data.features.forEach(feature => {
             const latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
             const color = getColorByClass(feature.properties.clase);
@@ -120,8 +118,6 @@ fetch('alojamientos.geojson')
     });
 
 // Cargar datos GeoJSON de regiones
-let regionsLayer;
-
 fetch('regiones.geojson')
     .then(response => {
         if (!response.ok) {
@@ -142,7 +138,8 @@ fetch('regiones.geojson')
             })
         });
 
-        // No agregar la capa de regiones al mapa aún
+        // Agregar la capa de regiones al mapa, pero no activarla aún
+        // map.addLayer(regionsLayer);
     })
     .catch(error => {
         console.error('Error al cargar el archivo GeoJSON de regiones:', error);
@@ -159,13 +156,12 @@ const baseMaps = {
 // Control de capas superpuestas
 const overlayMaps = {
     "Alojamientos": markers,
-    "Regiones": regionsLayer
 };
+
+// Agregar la capa de regiones si está disponible
+if (regionsLayer) {
+    overlayMaps["Regiones"] = regionsLayer;
+}
 
 // Agregar el control de capas al mapa
 const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
-
-// Al cargar la capa de regiones, agregarla al control de capas
-if (regionsLayer) {
-    layerControl.addOverlay(regionsLayer, "Regiones");
-}
