@@ -1,106 +1,13 @@
 const map = L.map('map').setView([-38.859, -68.097], 13);
 
-// Capas base
+// Capa base de OpenStreetMap
 const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-const googleSatelliteLayer = L.tileLayer('https://{s}.google.com/maps/vt?x={x}&y={y}&z={z}&s=Ga', {
-    maxZoom: 20,
-    attribution: 'Google Satellite'
-});
-
-const googleRoadLayer = L.tileLayer('https://{s}.google.com/maps/vt?x={x}&y={y}&z={z}&s=Ga', {
-    maxZoom: 20,
-    attribution: 'Google Roads'
-});
-
-// Agrupar las capas base
-const baseMaps = {
-    "OpenStreetMap": osmLayer,
-    "Google Satellite": googleSatelliteLayer,
-    "Google Roads": googleRoadLayer
-};
-
-// Capa de Alojamientos
-const markers = L.markerClusterGroup();
-
-fetch('alojamientos.geojson')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error al cargar el archivo GeoJSON de alojamientos');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (!data || !data.features || data.features.length === 0) {
-            throw new Error('No se encontraron alojamientos en el archivo GeoJSON.');
-        }
-
-        data.features.forEach(feature => {
-            const latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
-            const color = getColorByClass(feature.properties.clase);
-            const markerIcon = createMarkerIcon(color);
-
-            const marker = L.marker(latlng, { icon: markerIcon }).bindPopup(`
-                <b>Nombre:</b> ${feature.properties.nombre || 'Sin nombre'}<br>
-                <b>Dirección:</b> ${feature.properties.direccion || 'Sin dirección'}<br>
-                <b>Clase:</b> ${feature.properties.clase || 'Sin clase'}<br>
-                <b>Categoría:</b> ${feature.properties.categoria || 'Sin categoría'}
-            `);
-
-            markers.addLayer(marker);
-        });
-
-        map.addLayer(markers);
-    })
-    .catch(error => {
-        console.error('Error al cargar el archivo GeoJSON de alojamientos:', error);
-        alert('No se pudo cargar la capa de alojamientos. Verifique la consola para más detalles.');
-    });
-
-// Capa de Regiones
-let regionsLayer;
-
-fetch('regiones.geojson')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error al cargar el archivo GeoJSON de regiones');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (!data || !data.features || data.features.length === 0) {
-            throw new Error('No se encontraron regiones en el archivo GeoJSON.');
-        }
-
-        regionsLayer = L.geoJson(data, {
-            style: feature => ({
-                color: getColorByRegion(feature.properties.region),
-                weight: 2,
-                fillOpacity: 0.5
-            })
-        });
-
-        // No agregar la capa al mapa para que esté desactivada inicialmente
-        // map.addLayer(regionsLayer); // Esta línea ha sido comentada
-    })
-    .catch(error => {
-        console.error('Error al cargar el archivo GeoJSON de regiones:', error);
-        alert('No se pudo cargar la capa de regiones. Verifique la consola para más detalles.');
-    });
-
-// Control de capas
-const overlays = {
-    "Alojamientos": markers,
-    "Regiones": regionsLayer
-};
-
-L.control.layers(baseMaps, overlays, { collapsed: false }).addTo(map);
-
-// Funciones de color
+// Función para obtener el color según la clase
 function getColorByClass(clase) {
-    switch (clase) {
+    switch(clase) {
         case "AGROTURISMO aloj. Camping": return "red";
         case "AGROTURISMO s/alojamiento": return "orange";
         case "Albergue Turístico u Hostel": return "blue";
@@ -125,8 +32,9 @@ function getColorByClass(clase) {
     }
 }
 
+// Función para obtener el color según la región
 function getColorByRegion(region) {
-    switch (region) {
+    switch(region) {
         case "Centro Oeste": return "#f4ff92";
         case "Comarca Petrolera": return "#ff9029";
         case "Confluencia": return "#d7f1eb";
@@ -147,3 +55,90 @@ function createMarkerIcon(color) {
         iconAnchor: [10, 10]
     });
 }
+
+// Cargar datos GeoJSON de alojamientos
+fetch('alojamientos.geojson')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al cargar el archivo GeoJSON de alojamientos');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data || !data.features || data.features.length === 0) {
+            throw new Error('No se encontraron alojamientos en el archivo GeoJSON.');
+        }
+
+        const bounds = L.geoJson(data).getBounds();
+        map.fitBounds(bounds);
+
+        const markers = L.markerClusterGroup({
+            spiderfyDistanceMultiplier: 1.2,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true
+        });
+
+        data.features.forEach(feature => {
+            const latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
+            const color = getColorByClass(feature.properties.clase);
+            const markerIcon = createMarkerIcon(color);
+
+            const marker = L.marker(latlng, { icon: markerIcon }).bindPopup(`
+                <b>Nombre:</b> ${feature.properties.nombre || 'Sin nombre'}<br>
+                <b>Dirección:</b> ${feature.properties.direccion || 'Sin dirección'}<br>
+                <b>Clase:</b> ${feature.properties.clase || 'Sin clase'}<br>
+                <b>Categoría:</b> ${feature.properties.categoria || 'Sin categoría'}
+            `);
+
+            markers.addLayer(marker);
+        });
+
+        map.addLayer(markers);
+    })
+    .catch(error => {
+        console.error('Error al cargar el archivo GeoJSON de alojamientos:', error);
+        alert('No se pudo cargar la capa de alojamientos. Verifique la consola para más detalles.');
+    });
+
+// Cargar datos GeoJSON de regiones
+let regionsLayer;
+
+fetch('regiones.geojson')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al cargar el archivo GeoJSON de regiones');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data || !data.features || data.features.length === 0) {
+            throw new Error('No se encontraron regiones en el archivo GeoJSON.');
+        }
+
+        regionsLayer = L.geoJson(data, {
+            style: feature => ({
+                color: getColorByRegion(feature.properties.region),
+                weight: 2,
+                fillOpacity: 0.5
+            })
+        });
+
+        // No agregar la capa de regiones al mapa para que esté desactivada inicialmente
+        // map.addLayer(regionsLayer); // Esta línea ha sido comentada
+    })
+    .catch(error => {
+        console.error('Error al cargar el archivo GeoJSON de regiones:', error);
+        alert('No se pudo cargar la capa de regiones. Verifique la consola para más detalles.');
+    });
+
+// Control de capas
+const baseMaps = {
+    "OpenStreetMap": osmLayer
+};
+
+const overlays = {
+    "Alojamientos": markers,
+    "Regiones": regionsLayer
+};
+
+L.control.layers(baseMaps, overlays, { collapsed: false }).addTo(map);
