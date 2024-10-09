@@ -1,39 +1,45 @@
 const map = L.map('map').setView([-38.859, -68.097], 13);
 
-// Capas base de Google
-const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
-    attribution: 'Google Satellite'
-});
-
-const googleRoadmap = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
-    attribution: 'Google Roadmap'
-});
-
-const googleTerrain = L.tileLayer('https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
-    attribution: 'Google Terrain'
-});
-
 // Capa base de OpenStreetMap
 const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Capa de alojamientos
-let markersLayer;
-
-// Crear el grupo de marcadores para clustering
-const markers = L.markerClusterGroup();
-
-// Función para obtener el icono según la clase
-function getIconByClass(clase) {
-    switch (clase) {
-        case "Bodega": return new L.Icon({ iconUrl: 'https://example.com/icon-bodega.png', iconSize: [25, 41] }); // Cambia el URL
-        // Agrega más clases aquí
-        default: return new L.Icon({ iconUrl: 'https://example.com/icon-default.png', iconSize: [25, 41] }); // Cambia el URL
+// Función para obtener el color según la clase
+function getColorByClass(clase) {
+    switch(clase) {
+        case "AGROTURISMO aloj. Camping": return "red";
+        case "AGROTURISMO s/alojamiento": return "orange";
+        case "Albergue Turístico u Hostel": return "blue";
+        case "Alojamiento en Estancia Turística": return "green";
+        case "Apart-hotel": return "purple";
+        case "Bed & Breakfast": return "pink";
+        case "Bodega": return "brown";
+        case "Cabañas": return "cyan";
+        case "Dormis": return "magenta";
+        case "Dormis / Cabaña": return "lightblue";
+        case "ESTANCIA TURISTICA s/aloj.": return "darkgreen";
+        case "Hostería": return "darkblue";
+        case "Hotel": return "black";
+        case "Motel": return "darkred";
+        case "None": return "gray";
+        case "Residencial": return "yellow";
+        case "Turismo Rural": return "lightgreen";
+        case "Turismo Rural / Vivienda tcas": return "lightcoral";
+        case "Vivienda Turística": return "lime";
+        case "Vivienda Turística / Cabaña": return "slateblue";
+        default: return "gray"; // Color por defecto
     }
+}
+
+// Función para crear un ícono de marcador
+function createMarkerIcon(color) {
+    return L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="background-color: ${color}; border-radius: 50%; width: 20px; height: 20px; border: 2px solid white;"></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+    });
 }
 
 // Cargar datos GeoJSON
@@ -45,38 +51,37 @@ fetch('alojamientos.geojson')
         return response.json();
     })
     .then(data => {
+        if (!data || !data.features || data.features.length === 0) {
+            throw new Error('No se encontraron alojamientos en el archivo GeoJSON.');
+        }
+
         const bounds = L.geoJson(data).getBounds();
         map.fitBounds(bounds);
 
+        const markers = L.markerClusterGroup({
+            spiderfyDistanceMultiplier: 1.2,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true
+        });
+
         data.features.forEach(feature => {
             const latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
-            const icon = getIconByClass(feature.properties.clase);
-            const marker = L.marker(latlng, { icon }).bindPopup(`
+            const color = getColorByClass(feature.properties.clase);
+            const markerIcon = createMarkerIcon(color);
+
+            const marker = L.marker(latlng, {
+                icon: markerIcon
+            }).bindPopup(`
                 <b>Nombre:</b> ${feature.properties.nombre || 'Sin nombre'}<br>
                 <b>Dirección:</b> ${feature.properties.direccion || 'Sin dirección'}<br>
                 <b>Clase:</b> ${feature.properties.clase || 'Sin clase'}<br>
                 <b>Categoría:</b> ${feature.properties.categoria || 'Sin categoría'}
             `);
+
             markers.addLayer(marker);
         });
 
-        // Añadir el grupo de marcadores al mapa
-        markers.addTo(map);
-
-        // Agrega las capas a la caja de capas
-        const baseMaps = {
-            "OpenStreetMap": osmLayer,
-            "Google Satélite": googleSatellite,
-            "Google Mapa": googleRoadmap,
-            "Google Terreno": googleTerrain
-        };
-
-        const overlayMaps = {
-            "Alojamientos": markers
-        };
-
-        // Crea el control de capas
-        L.control.layers(baseMaps, overlayMaps).addTo(map);
+        map.addLayer(markers);
     })
     .catch(error => {
         console.error('Error al cargar el archivo GeoJSON:', error);
