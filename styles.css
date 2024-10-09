@@ -1,0 +1,33 @@
+/* styles.css */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#map {
+  height: 100vh;
+  width: 100%;
+}
+
+/* Estilo del popup */
+.leaflet-popup {
+  max-width: 200px; /* Puedes ajustar el ancho máximo */
+}
+
+.leaflet-popup b {
+  color: #333; /* Cambia el color del texto en negrita */
+}
+
+.leaflet-popup p {
+  margin: 5px 0; /* Espaciado entre párrafos */
+}
+
+/* Estilo del marcador personalizado */
+.custom-marker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
