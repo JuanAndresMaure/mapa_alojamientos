@@ -5,6 +5,17 @@ const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
+// Capas base de Google
+const googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    attribution: 'Google Satellite'
+});
+
+const googleRoadmap = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    attribution: 'Google Roadmap'
+});
+
 // Función para obtener el color según la clase
 function getColorByClass(clase) {
     switch(clase) {
@@ -82,6 +93,19 @@ fetch('alojamientos.geojson')
         });
 
         map.addLayer(markers);
+
+        // Controles de capas
+        const baseMaps = {
+            "OpenStreetMap": osmLayer,
+            "Google Satélite": googleSatellite,
+            "Google Mapa": googleRoadmap
+        };
+
+        const overlayMaps = {
+            "Alojamientos": markers
+        };
+
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
     })
     .catch(error => {
         console.error('Error al cargar el archivo GeoJSON:', error);
