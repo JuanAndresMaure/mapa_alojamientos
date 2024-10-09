@@ -27,7 +27,6 @@ body, html {
 /* Estilo del marcador personalizado */
 .custom-marker {
   width: 20px;
-  height: 10px;
-  border-radius: 5px;
-  border: 2px solid white;
+  height: 20px;
+  border-radius: 50%;
 }
