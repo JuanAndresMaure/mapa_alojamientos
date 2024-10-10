@@ -14,6 +14,7 @@
     <button id="toggle-legend" aria-expanded="false" aria-controls="legend">Mostrar Leyenda</button>
     <div id="legend" role="region" aria-labelledby="toggle-legend">
         <h4>Leyenda:</h4>
+        <h5>Alojamientos:</h5>
         <div><span style="color: red;">●</span> Agroturismo aloj. Camping</div>
         <div><span style="color: orange;">●</span> Agroturismo s/alojamiento</div>
         <div><span style="color: blue;">●</span> Albergue Turístico u Hostel</div>
@@ -34,6 +35,14 @@
         <div><span style="color: lightcoral;">●</span> Turismo Rural / Vivienda tcas</div>
         <div><span style="color: lime;">●</span> Vivienda Turística</div>
         <div><span style="color: slateblue;">●</span> Vivienda Turística / Cabaña</div>
+        <h5>Regiones:</h5>
+        <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #f4ff92; margin-right: 5px;"></span><span style="color: black;">Centro Oeste</span></div>
+        <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #ff9029; margin-right: 5px;"></span><span style="color: black;">Comarca Petrolera</span></div>
+        <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #d7f1eb; margin-right: 5px;"></span><span style="color: black;">Confluencia</span></div>
+        <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #c0a483; margin-right: 5px;"></span><span style="color: black;">Norte</span></div>
+        <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #519b8d; margin-right: 5px;"></span><span style="color: black;">Limay Medio</span></div>
+        <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #ff5389; margin-right: 5px;"></span><span style="color: black;">Sur</span></div>
+        <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #b775c4; margin-right: 5px;"></span><span style="color: black;">Vaca Muerta</span></div>
     </div>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
@@ -50,5 +59,7 @@
             toggleButton.setAttribute('aria-expanded', !isExpanded);
         });
     </script>
+</body>
+</html>
 </body>
 </html>
