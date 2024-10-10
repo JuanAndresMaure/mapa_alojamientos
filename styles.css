@@ -1,0 +1,71 @@
+/* styles.css */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Gothic A1', sans-serif; /* Cambia la fuente aquí */
+}
+
+#map {
+  height: 100vh;
+  width: 100%;
+}
+
+/* Estilo del popup */
+.leaflet-popup {
+  max-width: 200px; /* Puedes ajustar el ancho máximo */
+}
+
+.leaflet-popup b {
+  color: #333; /* Cambia el color del texto en negrita */
+}
+
+.leaflet-popup p {
+  margin: 5px 0; /* Espaciado entre párrafos */
+}
+
+/* Estilo del marcador personalizado */
+.custom-marker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* Estilos para la leyenda */
+#legend {
+    display: none; /* Inicialmente oculto */
+    position: absolute;
+    bottom: 60px;
+    left: 20px; /* Cambiado de right a left */
+    z-index: 1000;
+    background: white;
+    padding: 10px;
+    border: 1px solid black;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+/* Estilos para el botón de leyenda */
+#toggle-legend {
+    background-color: #87B867; /* Color verde */
+    color: black; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 10px 15px; /* Espaciado interno */
+    cursor: pointer; /* Cambiar cursor al pasar por encima */
+    font-family: 'Gothic A1', sans-serif; /* Fuente gótica */
+    font-size: 16px; /* Tamaño de fuente */
+    font-weight: bold; /* Texto en negrita */
+    transition: background-color 0.3s, transform 0.2s; /* Transiciones suaves */
+    position: absolute; /* Para posicionar */
+    bottom: 20px; /* Espaciado desde abajo */
+    left: 20px; /* Cambiado de right a left */
+    z-index: 1000; /* Asegura que esté por encima */
+}
+
+#toggle-legend:hover {
+    background-color: #0056b3; /* Color más oscuro al pasar el ratón */
+    transform: scale(1.05); /* Efecto de zoom al pasar el ratón */
+}
