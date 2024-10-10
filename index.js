@@ -132,14 +132,26 @@ fetch('regiones.geojson')
 
         regionsLayer = L.geoJson(data, {
             style: feature => ({
-                color: getColorByRegion(feature.properties.region),
+                color: getColorByRegion(feature.properties.region) || '#000000', // Color por defecto
                 weight: 2,
                 fillOpacity: 0.5
-            })
+            }),
+            onEachFeature: (feature, layer) => {
+                layer.bindPopup(`
+                    <b>Región:</b> ${feature.properties.region || 'Sin nombre'}<br>
+                    <b>Departamentos:</b> ${feature.properties.depto || 'Sin descripción'}
+                `);
+            }
         });
 
-        // Agregar la capa de regiones al mapa, pero no activarla aún
-        // map.addLayer(regionsLayer);
+        // Agregar la capa de regiones al mapa
+        map.addLayer(regionsLayer);
+
+        // Agregar la capa de regiones al objeto overlayMaps
+        overlayMaps["Regiones"] = regionsLayer; // Asegúrate de añadirlo aquí
+
+        // Agregar el control de capas al mapa
+        const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
     })
     .catch(error => {
         console.error('Error al cargar el archivo GeoJSON de regiones:', error);
@@ -156,12 +168,5 @@ const baseMaps = {
 // Control de capas superpuestas
 const overlayMaps = {
     "Alojamientos": markers,
+    // La capa de regiones se añade después de cargar el GeoJSON
 };
-
-// Agregar la capa de regiones si está disponible
-if (regionsLayer) {
-    overlayMaps["Regiones"] = regionsLayer;
-}
-
-// Agregar el control de capas al mapa
-const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
