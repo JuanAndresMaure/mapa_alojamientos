@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Alojamientos</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="map" role="application" aria-label="Mapa de alojamientos"></div>
+    <button id="toggle-legend" aria-expanded="false" aria-controls="legend">Mostrar Leyenda</button>
+    <div id="legend" role="region" aria-labelledby="toggle-legend" style="display: none;">
+        <h4>Leyenda:</h4>
+        
+        <button id="toggle-accommodations" aria-expanded="false" aria-controls="accommodations">Alojamientos</button>
+        <div id="accommodations" style="display: none;">
+            <h5>Alojamientos:</h5>
+            <!-- Contenido de alojamientos -->
+            <div><span style="color: red;">●</span> Agroturismo aloj. Camping</div>
+            <div><span style="color: orange;">●</span> Agroturismo s/alojamiento</div>
+            <div><span style="color: blue;">●</span> Albergue Turístico u Hostel</div>
+            <div><span style="color: green;">●</span> Alojamiento en Estancia Turística</div>
+            <div><span style="color: purple;">●</span> Apart-hotel</div>
+            <div><span style="color: pink;">●</span> Bed & Breakfast</div>
+            <div><span style="color: brown;">●</span> Bodega</div>
+            <div><span style="color: cyan;">●</span> Cabañas</div>
+            <div><span style="color: magenta;">●</span> Dormis</div>
+            <div><span style="color: lightblue;">●</span> Dormis / Cabaña</div>
+            <div><span style="color: darkgreen;">●</span> Estancia Turística s/aloj.</div>
+            <div><span style="color: darkblue;">●</span> Hostería</div>
+            <div><span style="color: black;">●</span> Hotel</div>
+            <div><span style="color: darkred;">●</span> Motel</div>
+            <div><span style="color: gray;">●</span> None</div>
+            <div><span style="color: yellow;">●</span> Residencial</div>
+            <div><span style="color: lightgreen;">●</span> Turismo Rural</div>
+            <div><span style="color: lightcoral;">●</span> Turismo Rural / Vivienda tcas</div>
+            <div><span style="color: lime;">●</span> Vivienda Turística</div>
+            <div><span style="color: slateblue;">●</span> Vivienda Turística / Cabaña</div>
+        </div>
+
+        <button id="toggle-regions" aria-expanded="false" aria-controls="regions">Regiones</button>
+        <div id="regions" style="display: none;">
+            <h5>Regiones:</h5>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #f4ff92; margin-right: 5px;"></span><span style="color: black;">Centro Oeste</span></div>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #ff9029; margin-right: 5px;"></span><span style="color: black;">Comarca Petrolera</span></div>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #d7f1eb; margin-right: 5px;"></span><span style="color: black;">Confluencia</span></div>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #c0a483; margin-right: 5px;"></span><span style="color: black;">Norte</span></div>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #519b8d; margin-right: 5px;"></span><span style="color: black;">Limay Medio</span></div>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #ff5389; margin-right: 5px;"></span><span style="color: black;">Sur</span></div>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #b775c4; margin-right: 5px;"></span><span style="color: black;">Vaca Muerta</span></div>
+        </div>
+
+        <button id="toggle-ejidos" aria-expanded="false" aria-controls="ejidos">Ejidos</button>
+        <div id="ejidos" style="display: none;">
+            <h5>Ejidos:</h5>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #c73d3f; margin-right: 5px;"></span><span style="color: black;">Primera Categoría</span></div>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #fec980; margin-right: 5px;"></span><span style="color: black;">Segunda Categoría</span></div>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #c7e8ad; margin-right: 5px;"></span><span style="color: black;">Tercera Categoría</span></div>
+            <div><span style="display: inline-block; width: 10px; height: 10px; background-color: #2b83ba; margin-right: 5px;"></span><span style="color: black;">Comisión de Fomento</span></div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="index.js"></script>
+    <script>
+        // Lógica para abrir/cerrar la leyenda
+        const toggleButton = document.getElementById('toggle-legend');
+        const legend = document.getElementById('legend');
+
+        toggleButton.addEventListener('click', () => {
+            const isExpanded = legend.style.display === 'block';
+            legend.style.display = isExpanded ? 'none' : 'block';
+            toggleButton.textContent = isExpanded ? 'Mostrar Leyenda' : 'Ocultar Leyenda';
+            toggleButton.setAttribute('aria-expanded', !isExpanded);
+        });
+
+        // Lógica para los botones de las secciones de la leyenda
+        const toggleSection = (buttonId, sectionId) => {
+            const button = document.getElementById(buttonId);
+            const section = document.getElementById(sectionId);
+
+            button.addEventListener('click', () => {
+                const isExpanded = section.style.display === 'block';
+                section.style.display = isExpanded ? 'none' : 'block';
+                button.textContent = isExpanded ? buttonId.replace('toggle-', '').replace(/([A-Z])/g, ' $1').trim() : `Ocultar ${buttonId.replace('toggle-', '').replace(/([A-Z])/g, ' $1').trim()}`;
+                button.setAttribute('aria-expanded', !isExpanded);
+            });
+        };
+
+        // Inicializando los toggles de cada sección
+        toggleSection('toggle-accommodations', 'accommodations');
+        toggleSection('toggle-regions', 'regions');
+        toggleSection('toggle-ejidos', 'ejidos');
+    </script>
+</body>
+</html>
